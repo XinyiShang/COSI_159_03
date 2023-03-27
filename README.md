@@ -25,5 +25,6 @@ https://github.com/XinyiShang/COSI_159_03/blob/0bb3865d202074a7eed4cb6db9a28093a
 ## References
 [1] R. Achanta, A. Shaji, K. Smith, A. Lucchi, P. Fua, and S. Süsstrunk, “SLIC Superpixels.” Available: 
 https://www.iro.umontreal.ca/~mignotte/IFT6150/Articles/SLIC_Superpixels.pdf
+
 [2] Kazuto Nakashima, Available: kazuto1011/grad-cam-pytorch: PyTorch implementation of Grad-CAM, 
 vanilla/guided backpropagation, deconvnet, and occlusion sensitivity maps (github.com)
