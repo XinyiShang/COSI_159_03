@@ -2,7 +2,6 @@ import numpy as np
 from PIL import Image
 from skimage.color import rgb2lab, lab2rgb
 
-
 class SLIC:
     def __init__(self, image, k, m):
         self.image = image
@@ -10,6 +9,7 @@ class SLIC:
         self.num_pixels = self.height * self.width
         self.k = k # Number of clusters
         self.m = m # Compactness parameter
+        self.cell_size = 0 #regulat grid step
         
         # Initialize cluster
         self.centers = None
@@ -34,19 +34,19 @@ class SLIC:
         centers_y = centers_y.reshape(-1)
         centers = np.zeros((grid_size[0]*grid_size[1], 5))
         centers[:, 0:3] = image[centers_y.astype(int), centers_x.astype(int)]
-        centers[:, 3] = centers_x
-        centers[:, 4] = centers_y
+        centers[:, 3] = centers_y
+        centers[:, 4] = centers_x
 
         # Randomly select the centers
         offset_x = np.random.uniform(-cell_size/2, cell_size/2, centers.shape[0])
         offset_y = np.random.uniform(-cell_size/2, cell_size/2, centers.shape[0])
-        centers[:, 3] += offset_x
-        centers[:, 4] += offset_y
+        centers[:, 3] += offset_y
+        centers[:, 4] += offset_x
 
         # Update the compactness parameter
-        m = self.m * cell_size #cell-size is the scale parameter, s/m?
-
-        return centers, m
+        self.cell_size = cell_size #cell-size is the scale parameter, s/m?
+        #print(cell_size)
+        return centers
 
     def assign_pixels_to_clusters(self):
         """
@@ -54,10 +54,11 @@ class SLIC:
         """
         for i in range(self.k):
             # Define search window
-            x_min = int(max(self.centers[i, 4] - self.m, 0))
-            x_max = int(min(self.centers[i, 4] + self.m, self.width))
-            y_min = int(max(self.centers[i, 3] - self.m, 0))
-            y_max = int(min(self.centers[i, 3] + self.m, self.height))
+            # The paper proposed search box 2S, but not working well. This one (m*S) seems work the best.
+            x_min = int(max(self.centers[i, 4] - self.cell_size*self.m, 0))
+            x_max = int(min(self.centers[i, 4] + self.cell_size*self.m, self.width))
+            y_min = int(max(self.centers[i, 3] - self.cell_size*self.m, 0))
+            y_max = int(min(self.centers[i, 3] + self.cell_size*self.m, self.height))
 
             window = self.image[y_min:y_max, x_min:x_max]
 
@@ -66,7 +67,7 @@ class SLIC:
             # Calculate distances
             distances = np.sqrt(np.sum((window_lab - self.centers[i, :3])**2, axis=2))
             y, x = np.indices(distances.shape)
-            distances += np.sqrt((x - self.centers[i, 4])**2 + (y - self.centers[i, 3])**2) / self.m
+            distances += np.sqrt((x - self.centers[i, 4])**2 + (y - self.centers[i, 3])**2) / (self.m*self.cell_size) #paper suggest s/m, but this one seems have better performance on my image
 
             # Update labels and distances
             mask = distances < self.distances[y_min:y_max, x_min:x_max]
@@ -89,7 +90,7 @@ class SLIC:
         """
         Generate the Superpixel
         """
-        self.centers, self.m = self.initialize_clusters(self.image,self.k,self.m)
+        self.centers = self.initialize_clusters(self.image,self.k,self.m)
         for i in range(num_iterations):
             print(f"Iteration {i + 1}")
             self.assign_pixels_to_clusters()
