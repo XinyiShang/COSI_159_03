@@ -13,10 +13,10 @@ run the SLIC from the scimage and my implementation,
 then compare the result
 
 ### Write up: 
-https://github.com/XinyiShang/COSI_159_03/blob/64078602d8aaffeaa71c69e02439fe35f415836a/Task1/Task1_writeUp.pdf
+https://github.com/XinyiShang/COSI_159_03/blob/0bb3865d202074a7eed4cb6db9a28093ad022285/Task1/Task1_writeUp.pdf
 
 ## Task 2: 
 Reproduce the Grad-CAM: Visual Explanations from Deep Network via Gradient-based Localization 
 
 ### Write up: 
-https://github.com/XinyiShang/COSI_159_03/blob/64078602d8aaffeaa71c69e02439fe35f415836a/Task2/Task2_writeUp.pdf
+https://github.com/XinyiShang/COSI_159_03/blob/0bb3865d202074a7eed4cb6db9a28093ad022285/Task2/Task2_writeUp.pdf
